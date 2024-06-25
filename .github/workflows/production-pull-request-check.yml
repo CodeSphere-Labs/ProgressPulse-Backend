@@ -1,0 +1,19 @@
+name: Check PR Source Branch
+
+on:
+  pull_request:
+    branches:
+      - prod
+
+jobs:
+  check-branch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check if PR is from dev branch
+        run: |
+          echo "Base ref is ${{ github.base_ref }}"
+          if [ "${{ github.head_ref }}" != "dev" ]; then
+            echo "Pull request can only be made from 'dev' branch."
+            exit 1
+          fi

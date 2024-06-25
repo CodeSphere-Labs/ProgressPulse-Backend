@@ -1,0 +1,43 @@
+name: CI Pipeline for Progress Pulse Backend
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+    branches:
+      - main
+      - dev
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20.11.1]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: 📦 Install dependencies 📦
+        run: npm install
+
+      - name: ⌛ Run lint ⌛
+        run: npm run lint
+
+      - name: 🧪 Run tests 🧪
+        run: npm run test
+
+      - name: 🛠️ Build project 🛠️
+        run: npm run build
+
+      - name: 📡 Run e2e tests 📡
+        run: npm run test:e2e
