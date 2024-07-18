@@ -9,3 +9,49 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Yoda {
+  id      Int       @id @default(autoincrement())
+
+  email   String    @unique
+
+  first_name String
+  last_name String
+  patronymic String
+
+  password String
+}
+
+model Jedi {
+  id      Int       @id @default(autoincrement())
+
+  first_name String
+  last_name String
+  patronymic String
+
+  password String
+  
+  email   String    @unique
+
+  isActive  Boolean @default(false)
+  
+  Padawan Padawan[]
+}
+
+model Padawan {
+  id     Int     @id @default(autoincrement())
+  
+  first_name String
+  last_name String
+  patronymic String
+
+  password String
+  
+  email  String  @unique
+  feedback String[] @default([])
+
+  isActive  Boolean @default(false)
+
+  jedi   Jedi?   @relation(fields: [jediId], references: [id]) 
+  jediId Int?
+}
