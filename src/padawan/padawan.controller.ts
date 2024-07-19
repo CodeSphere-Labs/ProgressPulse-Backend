@@ -20,7 +20,7 @@ import { ResponseCreatePadawanDto } from 'src/padawan/dto/ResponseCreate';
 export class PadawanController {
   constructor(private readonly padawanService: PadawanService) {}
 
-  @Get()
+  @Get('all')
   @UseInterceptors(ClassSerializerInterceptor)
   @UseInterceptors(new TransformDataInterceptor(ResponsePadawanDto))
   findAll() {
@@ -34,9 +34,9 @@ export class PadawanController {
     return this.padawanService.findOne(id);
   }
 
+  @UseInterceptors(ClassSerializerInterceptor)
+  @UseInterceptors(new TransformDataInterceptor(ResponsePadawanDto))
   @Patch(':id')
-  // @UseInterceptors(ClassSerializerInterceptor)
-  // @UseInterceptors(new TransformDataInterceptor(ResponsePadawanDto))
   async update(
     @Param('id') id: string | number,
     @Body() updatePadawanDto: UpdatePadawanDto,

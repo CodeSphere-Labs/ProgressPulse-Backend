@@ -1,4 +1,5 @@
-import { Exclude, Expose } from 'class-transformer';
+import { Exclude, Expose, Type } from 'class-transformer';
+import { ResponseJediDto } from 'src/jedi/dto/ResponseJedi';
 
 @Exclude()
 export class ResponseCreatePadawanDto {
@@ -22,4 +23,8 @@ export class ResponseCreatePadawanDto {
 
   @Expose()
   isActive: boolean;
+
+  @Expose()
+  @Type(() => ResponseJediDto)
+  jedi: ResponseJediDto;
 }

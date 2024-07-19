@@ -95,9 +95,11 @@ describe('PadawanService', () => {
   describe('updateOne', () => {
     it('should call the update method', async () => {
       const updateDto = { patronymic: 'updated' };
+
       jest
         .spyOn(db.padawan, 'update')
         .mockResolvedValue({ ...onePadawan, ...updateDto });
+
       const updatedPadawan = await service.update('1', updateDto);
       expect(updatedPadawan).toEqual({ ...onePadawan, patronymic: 'updated' });
     });

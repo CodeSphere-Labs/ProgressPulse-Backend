@@ -32,18 +32,27 @@ export class PadawanService {
     return this.prisma.padawan.update({
       where: { id: Number(id) },
       data: updatePadawanDto,
+      include: {
+        jedi: true,
+      },
     });
   }
 
   create(createPadawanDto: CreatePadawanDto) {
     const padawan = this.prisma.padawan.create({
       data: createPadawanDto,
+      include: {
+        jedi: true,
+      },
     });
 
     return padawan;
   }
 
   delete(id: string | number) {
-    return this.prisma.padawan.delete({ where: { id: Number(id) } });
+    return this.prisma.padawan.delete({
+      where: { id: Number(id) },
+      include: { jedi: true },
+    });
   }
 }
