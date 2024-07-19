@@ -154,8 +154,6 @@ describe('PadawanModule (e2e)', () => {
         .patch('/padawan/1')
         .send(changeMock);
 
-      console.log(response.body);
-
       expect(response.status).toBe(200);
       expect(response.body).toEqual(returnMock);
     });
