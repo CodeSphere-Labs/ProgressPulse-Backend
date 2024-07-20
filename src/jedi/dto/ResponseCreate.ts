@@ -18,5 +18,5 @@ export class ResponseCreateJediDto {
   email: string;
 
   @Expose()
-  isActive: boolean;
+  role: string;
 }

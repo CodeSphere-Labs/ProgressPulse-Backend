@@ -22,7 +22,7 @@ export class ResponseCreatePadawanDto {
   feedback: string[];
 
   @Expose()
-  isActive: boolean;
+  role: string;
 
   @Expose()
   @Type(() => ResponseJediDto)

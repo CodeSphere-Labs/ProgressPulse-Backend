@@ -11,7 +11,8 @@ const obiWan: ResponseJediDto = {
   last_name: 'Kenobi',
   patronymic: 'Patronymic',
   email: 'obi-wan@mail.com',
-  isActive: true,
+  role: 'JEDI',
+
   Padawan: {
     id: 1,
     first_name: 'Luke',
@@ -19,7 +20,8 @@ const obiWan: ResponseJediDto = {
     patronymic: 'Patronymic',
     email: 'luke@mail.com',
     feedback: [],
-    isActive: true,
+    role: 'PADAWAN',
+
     jedi: null,
   },
 };
@@ -41,8 +43,8 @@ const padawans: ResponsePadawanDto[] = [
     patronymic: 'Patronymic',
     email: 'luke@mail.com',
     feedback: [],
-    isActive: true,
     jedi: obiWan,
+    role: 'PADAWAN',
   },
 ];
 

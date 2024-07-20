@@ -59,7 +59,7 @@ describe('PadawanModule (e2e)', () => {
       patronymic: 'Patronymic',
       email: 'luke@mail.com',
       feedback: [],
-      isActive: true,
+      role: 'PADAWAN',
       jedi: null,
     };
 
@@ -93,14 +93,15 @@ describe('PadawanModule (e2e)', () => {
       patronymic: 'Patronymic',
       email: 'luke@mail.com',
       feedback: [],
-      isActive: true,
+      role: 'PADAWAN',
+
       jedi: {
         id: 1,
         first_name: 'Obi-Wan',
         last_name: 'Kenobi',
         patronymic: 'Patronymic',
         email: 'obi-wan@mail.com',
-        isActive: true,
+        role: 'JEDI',
       },
     };
 
@@ -128,14 +129,15 @@ describe('PadawanModule (e2e)', () => {
       patronymic: 'PatronymicReturn',
       email: 'luke@mail.com',
       feedback: [],
-      isActive: true,
+      role: 'PADAWAN',
+
       jedi: {
         id: 1,
         first_name: 'Obi-Wan',
         last_name: 'Kenobi',
         patronymic: 'Patronymic',
         email: 'obi-wan@mail.com',
-        isActive: true,
+        role: 'JEDI',
       },
     };
 
@@ -167,14 +169,15 @@ describe('PadawanModule (e2e)', () => {
       patronymic: 'PatronymicReturn',
       email: 'luke@mail.com',
       feedback: [],
-      isActive: true,
+      role: 'PADAWAN',
+
       jedi: {
         id: 1,
         first_name: 'Obi-Wan',
         last_name: 'Kenobi',
         patronymic: 'Patronymic',
         email: 'obi-wan@mail.com',
-        isActive: true,
+        role: 'JEDI',
       },
     };
 

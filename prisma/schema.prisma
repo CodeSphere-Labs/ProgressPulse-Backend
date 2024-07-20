@@ -19,6 +19,8 @@ model Yoda {
   last_name String
   patronymic String
 
+  role Role? @default(YODA)
+
   password String
 }
 
@@ -33,8 +35,8 @@ model Jedi {
   
   email   String    @unique
 
-  isActive  Boolean @default(false)
-  
+  role Role? @default(JEDI)
+
   Padawan Padawan[]
 }
 
@@ -46,12 +48,18 @@ model Padawan {
   patronymic String
 
   password String
-  
+
+  role Role? @default(PADAWAN)
+
   email  String  @unique
   feedback String[] @default([])
 
-  isActive  Boolean @default(false)
-
   jedi   Jedi?   @relation(fields: [jediId], references: [id]) 
   jediId Int?
+}
+
+enum Role {
+  YODA
+  JEDI
+  PADAWAN
 }
