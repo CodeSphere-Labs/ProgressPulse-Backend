@@ -9,7 +9,7 @@ export class JediService {
   findAll() {
     const jedis = this.prisma.jedi.findMany({
       include: {
-        Padawan: true,
+        padawans: true,
       },
     });
 
