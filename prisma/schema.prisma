@@ -10,52 +10,30 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Yoda {
-  id      Int       @id @default(autoincrement())
-
-  email   String    @unique
+model User {
+  id       Int     @id @default(autoincrement())
 
   first_name String
   last_name String
   patronymic String
 
-  role Role? @default(YODA)
-
+  email    String  @unique
   password String
-}
+  role     Role
 
-model Jedi {
-  id      Int       @id @default(autoincrement())
-
-  first_name String
-  last_name String
-  patronymic String
-
-  password String
-  
-  email   String    @unique
-
-  role Role? @default(JEDI)
-
-  Padawan Padawan[]
+  // Связи для Jedi и Padawan
+  padawans Padawan[] @relation("JediPadawans")
+  Padawan  Padawan[]
 }
 
 model Padawan {
-  id     Int     @id @default(autoincrement())
-  
-  first_name String
-  last_name String
-  patronymic String
+  id       Int    @id @default(autoincrement())
+  userId   Int
+  jediId   Int
+  feedback String[] @default([]) // Поле feedback, которое нужно только Padawan
 
-  password String
-
-  role Role? @default(PADAWAN)
-
-  email  String  @unique
-  feedback String[] @default([])
-
-  jedi   Jedi?   @relation(fields: [jediId], references: [id]) 
-  jediId Int?
+  user     User   @relation(fields: [userId], references: [id])
+  jedi     User   @relation("JediPadawans", fields: [jediId], references: [id])
 }
 
 enum Role {

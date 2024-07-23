@@ -9,12 +9,12 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseInterceptors,
 } from '@nestjs/common';
 import { PadawanService } from './padawan.service';
 import { ResponsePadawanDto } from 'src/padawan/dto/ResponsePadawan';
 import { CreatePadawanDto } from 'src/padawan/dto/CreatePadawan';
-import { ResponseCreatePadawanDto } from 'src/padawan/dto/ResponseCreate';
 
 @Controller('padawan')
 export class PadawanController {
@@ -23,15 +23,18 @@ export class PadawanController {
   @Get('all')
   @UseInterceptors(ClassSerializerInterceptor)
   @UseInterceptors(new TransformDataInterceptor(ResponsePadawanDto))
-  findAll() {
-    return this.padawanService.findAll();
+  findAll(@Query() params?: { withJedi?: boolean }) {
+    return this.padawanService.findAll(params.withJedi);
   }
 
   @Get(':id')
   @UseInterceptors(ClassSerializerInterceptor)
   @UseInterceptors(new TransformDataInterceptor(ResponsePadawanDto))
-  async findOne(@Param('id') id: string | number) {
-    return this.padawanService.findOne(id);
+  async findOne(
+    @Param('id') id: string | number,
+    @Query() params?: { withJedi?: boolean },
+  ) {
+    return this.padawanService.findOne(id, params.withJedi);
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
@@ -40,13 +43,14 @@ export class PadawanController {
   async update(
     @Param('id') id: string | number,
     @Body() updatePadawanDto: UpdatePadawanDto,
+    @Query() params?: { withJedi?: boolean },
   ) {
-    return this.padawanService.update(id, updatePadawanDto);
+    return this.padawanService.update(id, updatePadawanDto, params.withJedi);
   }
 
   @Post()
   @UseInterceptors(ClassSerializerInterceptor)
-  @UseInterceptors(new TransformDataInterceptor(ResponseCreatePadawanDto))
+  @UseInterceptors(new TransformDataInterceptor(ResponsePadawanDto))
   create(@Body() createPadawanDto: CreatePadawanDto) {
     return this.padawanService.create(createPadawanDto);
   }

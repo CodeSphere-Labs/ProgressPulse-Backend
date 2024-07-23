@@ -11,6 +11,9 @@ export class UpdatePadawanDto {
   readonly patronymic?: string;
 
   @Optional()
+  readonly feedback?: string[];
+
+  @Optional()
   readonly email?: string;
 
   @Optional()

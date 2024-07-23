@@ -9,14 +9,14 @@ import {
 } from '@nestjs/common';
 import { JediService } from './jedi.service';
 import { ResponseJediDto } from './dto/ResponseJedi';
-import { CreateJediDto } from './dto/CreateJedi';
 import { ResponseCreateJediDto } from './dto/ResponseCreate';
+import { CreateUserDto } from 'src/database/dto/User.dto';
 
 @Controller('jedi')
 export class JediController {
   constructor(private readonly jediService: JediService) {}
 
-  @Get()
+  @Get('all')
   @UseInterceptors(ClassSerializerInterceptor)
   @UseInterceptors(new TransformDataInterceptor(ResponseJediDto))
   findAll() {
@@ -26,7 +26,7 @@ export class JediController {
   @Post()
   @UseInterceptors(ClassSerializerInterceptor)
   @UseInterceptors(new TransformDataInterceptor(ResponseCreateJediDto))
-  create(@Body() createJediDto: CreateJediDto) {
+  create(@Body() createJediDto: CreateUserDto) {
     return this.jediService.create(createJediDto);
   }
 }
