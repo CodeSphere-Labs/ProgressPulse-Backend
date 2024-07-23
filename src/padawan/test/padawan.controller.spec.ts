@@ -1,31 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PadawanService } from '../padawan.service';
 import { ResponsePadawanDto } from '../dto/ResponsePadawan';
-import { ResponseJediDto } from '../../jedi/dto/ResponseJedi';
 import { PrismaService } from 'src/database/prisma.service';
 import { CreatePadawanDto } from 'src/padawan/dto/CreatePadawan';
+import { UpdatePadawanDto } from 'src/padawan/dto/UpdatePadawan';
 
-const obiWan: ResponseJediDto = {
-  id: 1,
-  first_name: 'Obi-Wan',
-  last_name: 'Kenobi',
-  patronymic: 'Patronymic',
-  email: 'obi-wan@mail.com',
-  role: 'JEDI',
-
-  Padawan: {
-    id: 1,
-    first_name: 'Luke',
-    last_name: 'Skywalker',
-    patronymic: 'Patronymic',
-    email: 'luke@mail.com',
-    feedback: [],
-    role: 'PADAWAN',
-
-    jedi: null,
-  },
-};
-
+// Мок данных
 const ashokaTano: CreatePadawanDto = {
   first_name: 'Ahsoka',
   last_name: 'Tano',
@@ -35,16 +15,36 @@ const ashokaTano: CreatePadawanDto = {
   jediId: 1,
 };
 
+const updatedPadawanDto: UpdatePadawanDto = {
+  feedback: ['Updated feedback'],
+  jediId: 2,
+  patronymic: 'Updated Patronymic',
+};
+
 const padawans: ResponsePadawanDto[] = [
   {
-    id: 1,
-    first_name: 'Luke',
-    last_name: 'Skywalker',
-    patronymic: 'Patronymic',
-    email: 'luke@mail.com',
-    feedback: [],
-    jedi: obiWan,
-    role: 'PADAWAN',
+    id: 2,
+    feedback: ['Some feedback'],
+    user: {
+      id: 3,
+      first_name: 'Enakin',
+      last_name: 'Skywalker',
+      patronymic: 'Patronymic',
+      email: 'enakin@mail.ru',
+      role: 'PADAWAN',
+    },
+  },
+  {
+    id: 3,
+    feedback: ['Another feedback'],
+    user: {
+      id: 4,
+      first_name: 'Ashoka',
+      last_name: 'Tano',
+      patronymic: 'Patronymic',
+      email: 'ashoka@mail.ru',
+      role: 'PADAWAN',
+    },
   },
 ];
 
@@ -54,9 +54,26 @@ const db = {
   padawan: {
     findMany: jest.fn().mockResolvedValue(padawans),
     findUniqueOrThrow: jest.fn().mockResolvedValue(onePadawan),
-    create: jest.fn().mockReturnValue(ashokaTano),
-    update: jest.fn().mockResolvedValue(onePadawan),
+    create: jest.fn().mockResolvedValue({
+      ...ashokaTano,
+      id: 3,
+    }),
+    update: jest.fn().mockResolvedValue({
+      ...onePadawan,
+      ...updatedPadawanDto,
+    }),
     delete: jest.fn().mockResolvedValue(onePadawan),
+  },
+  user: {
+    update: jest.fn().mockResolvedValue({
+      id: 3,
+      ...updatedPadawanDto,
+    }),
+    create: jest.fn().mockResolvedValue({
+      id: 3,
+      ...ashokaTano,
+      role: 'PADAWAN',
+    }),
   },
 };
 
@@ -86,24 +103,46 @@ describe('PadawanService', () => {
       const result = await service.findAll();
       expect(result).toEqual(padawans);
     });
-  });
 
-  describe('findOne', () => {
-    it('should get a single padawan', () => {
-      expect(service.findOne('1')).resolves.toEqual(onePadawan);
+    it('should return an array of padawans including jedis if requested', async () => {
+      const result = await service.findAll(true);
+      expect(result).toEqual(padawans);
     });
   });
 
-  describe('updateOne', () => {
-    it('should call the update method', async () => {
-      const updateDto = { patronymic: 'updated' };
+  describe('findOne', () => {
+    it('should get a single padawan', async () => {
+      const result = await service.findOne(2);
+      expect(result).toEqual(onePadawan);
+    });
 
-      jest
-        .spyOn(db.padawan, 'update')
-        .mockResolvedValue({ ...onePadawan, ...updateDto });
+    it('should get a single padawan including jedis if requested', async () => {
+      const result = await service.findOne(2, true);
+      expect(result).toEqual(onePadawan);
+    });
+  });
 
-      const updatedPadawan = await service.update('1', updateDto);
-      expect(updatedPadawan).toEqual({ ...onePadawan, patronymic: 'updated' });
+  describe('update', () => {
+    it('should call the update method and update padawan and user', async () => {
+      const updatedPadawan = {
+        ...onePadawan,
+        feedback: updatedPadawanDto.feedback,
+        jediId: updatedPadawanDto.jediId,
+        user: {
+          id: 3,
+          ...updatedPadawanDto,
+        },
+      };
+
+      jest.spyOn(db.padawan, 'update').mockResolvedValue(updatedPadawan);
+      jest.spyOn(db.user, 'update').mockResolvedValue({
+        id: 3,
+        ...updatedPadawanDto,
+      });
+
+      const result = await service.update(2, updatedPadawanDto, true);
+
+      expect(result).toEqual(updatedPadawan);
     });
   });
 
@@ -114,16 +153,14 @@ describe('PadawanService', () => {
         ...ashokaTano,
       };
 
-      jest.spyOn(db.padawan, 'create').mockResolvedValue(newPadawan);
-
       const result = await service.create(ashokaTano);
       expect(result).toEqual(newPadawan);
     });
   });
 
-  describe('deleteOne', () => {
+  describe('delete', () => {
     it('should delete a padawan', async () => {
-      const result = await service.delete('1');
+      const result = await service.delete(2);
       expect(result).toEqual(onePadawan);
     });
   });

@@ -15,6 +15,10 @@ describe('PadawanModule (e2e)', () => {
       create: jest.fn(),
       delete: jest.fn(),
     },
+    user: {
+      update: jest.fn(),
+      create: jest.fn(),
+    },
   };
 
   beforeAll(async () => {
@@ -38,47 +42,78 @@ describe('PadawanModule (e2e)', () => {
     jest.clearAllMocks();
   });
 
-  describe('GET: padawan/all', () => {
+  describe('GET: /padawan/all', () => {
+    const mockPadawans = [
+      {
+        id: 1,
+        feedback: [],
+        user: {
+          id: 2,
+          first_name: 'Luke',
+          last_name: 'Skywalker',
+          patronymic: 'Patronymic',
+          email: 'luke@mail.com',
+        },
+        jedi: {
+          id: 1,
+          first_name: 'Obi-Wan',
+          last_name: 'Kenobi',
+          patronymic: 'Patronymic',
+          email: 'obi-wan@mail.com',
+        },
+      },
+    ];
+
     beforeEach(() => {
-      jest.spyOn(mockDataBaseService.padawan, 'findMany').mockResolvedValue([]);
+      jest
+        .spyOn(mockDataBaseService.padawan, 'findMany')
+        .mockResolvedValue(mockPadawans);
     });
 
-    it('should return OK', async () => {
+    it('should return OK with padawans data', async () => {
       const response = await request(app.getHttpServer()).get('/padawan/all');
 
       expect(response.status).toBe(200);
-      expect(response.body).toEqual([]);
+      expect(response.body).toEqual(mockPadawans);
     });
   });
 
-  describe('GET: padawan/:id', () => {
-    const mock = {
+  describe('GET: /padawan/:id', () => {
+    const mockPadawan = {
       id: 1,
-      first_name: 'Luke',
-      last_name: 'Skywalker',
-      patronymic: 'Patronymic',
-      email: 'luke@mail.com',
       feedback: [],
-      role: 'PADAWAN',
-      jedi: null,
+      user: {
+        id: 2,
+        first_name: 'Luke',
+        last_name: 'Skywalker',
+        patronymic: 'Patronymic',
+        email: 'luke@mail.com',
+      },
+      jedi: {
+        id: 1,
+        first_name: 'Obi-Wan',
+        last_name: 'Kenobi',
+        patronymic: 'Patronymic',
+        email: 'obi-wan@mail.com',
+      },
     };
 
     beforeEach(() => {
       jest
         .spyOn(mockDataBaseService.padawan, 'findUniqueOrThrow')
-        .mockResolvedValue(mock);
+        .mockResolvedValue(mockPadawan);
     });
 
-    it('should return OK', async () => {
+    it('should return OK with padawan data', async () => {
       const response = await request(app.getHttpServer()).get('/padawan/1');
 
       expect(response.status).toBe(200);
-      expect(response.body).toEqual(mock);
+      expect(response.body).toEqual(mockPadawan);
     });
   });
 
-  describe('POST: padawan', () => {
-    const signUpMock = {
+  describe('POST: /padawan', () => {
+    const createPadawanDto = {
       first_name: 'Luke',
       last_name: 'Skywalker',
       patronymic: 'Patronymic',
@@ -86,112 +121,113 @@ describe('PadawanModule (e2e)', () => {
       password: '12345',
       jediId: 1,
     };
-    const returnMock = {
-      id: 1,
-      first_name: 'Luke',
-      last_name: 'Skywalker',
-      patronymic: 'Patronymic',
-      email: 'luke@mail.com',
-      feedback: [],
-      role: 'PADAWAN',
 
+    const createdPadawan = {
+      id: 1,
+      feedback: [],
+      user: {
+        id: 2,
+        first_name: 'Luke',
+        last_name: 'Skywalker',
+        patronymic: 'Patronymic',
+        email: 'luke@mail.com',
+        role: 'PADAWAN',
+      },
       jedi: {
         id: 1,
         first_name: 'Obi-Wan',
         last_name: 'Kenobi',
         patronymic: 'Patronymic',
         email: 'obi-wan@mail.com',
-        role: 'JEDI',
       },
     };
 
     beforeEach(() => {
       jest
+        .spyOn(mockDataBaseService.user, 'create')
+        .mockResolvedValue(createdPadawan.user);
+      jest
         .spyOn(mockDataBaseService.padawan, 'create')
-        .mockResolvedValue(returnMock);
+        .mockResolvedValue(createdPadawan);
     });
 
-    it('should return OK', async () => {
+    it('should return OK with created padawan', async () => {
       const response = await request(app.getHttpServer())
         .post('/padawan')
-        .send(signUpMock);
+        .send(createPadawanDto);
 
       expect(response.status).toBe(201);
-      expect(response.body).toEqual(returnMock);
+      expect(response.body).toEqual(createdPadawan);
     });
   });
 
-  describe('PATCH: padawan/:id', () => {
-    const returnMock = {
+  describe('PATCH: /padawan/:id', () => {
+    const updatedPadawan = {
       id: 1,
-      first_name: 'Luke',
-      last_name: 'Skywalker',
-      patronymic: 'PatronymicReturn',
-      email: 'luke@mail.com',
-      feedback: [],
-      role: 'PADAWAN',
-
+      feedback: ['Updated feedback'],
+      user: {
+        id: 2,
+        first_name: 'Luke',
+        last_name: 'Skywalker',
+        patronymic: 'PatronymicUpdated',
+        email: 'luke@mail.com',
+      },
       jedi: {
         id: 1,
         first_name: 'Obi-Wan',
         last_name: 'Kenobi',
         patronymic: 'Patronymic',
         email: 'obi-wan@mail.com',
-        role: 'JEDI',
       },
     };
 
-    const changeMock = {
-      patronymic: 'PatronymicReturn',
+    const updateDto = {
+      patronymic: 'PatronymicUpdated',
     };
 
     beforeEach(() => {
       jest
         .spyOn(mockDataBaseService.padawan, 'update')
-        .mockResolvedValue(returnMock);
+        .mockResolvedValue(updatedPadawan);
+      jest
+        .spyOn(mockDataBaseService.user, 'update')
+        .mockResolvedValue(updatedPadawan.user);
     });
 
-    it('should return OK', async () => {
+    it('should return OK with updated padawan', async () => {
       const response = await request(app.getHttpServer())
         .patch('/padawan/1')
-        .send(changeMock);
+        .send(updateDto);
 
       expect(response.status).toBe(200);
-      expect(response.body).toEqual(returnMock);
+      expect(response.body).toEqual(updatedPadawan);
     });
   });
 
-  describe('DELETE: padawan/:id', () => {
-    const returnMock = {
+  describe('DELETE: /padawan/:id', () => {
+    const deletedPadawan = {
       id: 1,
-      first_name: 'Luke',
-      last_name: 'Skywalker',
-      patronymic: 'PatronymicReturn',
-      email: 'luke@mail.com',
-      feedback: [],
-      role: 'PADAWAN',
-
-      jedi: {
-        id: 1,
-        first_name: 'Obi-Wan',
-        last_name: 'Kenobi',
+      feedback: ['Feedback'],
+      user: {
+        id: 2,
+        first_name: 'Luke',
+        last_name: 'Skywalker',
         patronymic: 'Patronymic',
-        email: 'obi-wan@mail.com',
-        role: 'JEDI',
+        email: 'luke@mail.com',
       },
     };
 
     beforeEach(() => {
       jest
         .spyOn(mockDataBaseService.padawan, 'delete')
-        .mockResolvedValue(returnMock);
+        .mockResolvedValue(deletedPadawan);
     });
 
-    it('should return OK', async () => {
+    it('should return OK with deleted padawan', async () => {
       const response = await request(app.getHttpServer()).delete('/padawan/1');
 
       expect(response.status).toBe(200);
-      expect(response.body).toEqual(returnMock);
+      expect(response.body).toEqual(deletedPadawan);
     });
   });
 });

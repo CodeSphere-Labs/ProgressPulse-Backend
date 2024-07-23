@@ -16,5 +16,5 @@ export class ResponsePadawanDto {
 
   @Expose()
   @Type(() => ResponseJediDto)
-  jedi: ResponseJediDto;
+  jedi?: ResponseJediDto;
 }

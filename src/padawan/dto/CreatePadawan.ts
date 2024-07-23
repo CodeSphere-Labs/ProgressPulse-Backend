@@ -7,5 +7,5 @@ export class CreatePadawanDto extends CreateUserDto {
   readonly jediId: number;
 
   @IsOptional()
-  readonly feedback: string[];
+  readonly feedback?: string[];
 }

@@ -21,7 +21,6 @@ model User {
   password String
   role     Role
 
-  // Связи для Jedi и Padawan
   padawans Padawan[] @relation("JediPadawans")
   Padawan  Padawan[]
 }
@@ -30,7 +29,7 @@ model Padawan {
   id       Int    @id @default(autoincrement())
   userId   Int
   jediId   Int
-  feedback String[] @default([]) // Поле feedback, которое нужно только Padawan
+  feedback String[] @default([])
 
   user     User   @relation(fields: [userId], references: [id])
   jedi     User   @relation("JediPadawans", fields: [jediId], references: [id])
