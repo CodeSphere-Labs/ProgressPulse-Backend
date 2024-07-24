@@ -23,5 +23,5 @@ export class ResponseJediDto {
 
   @Expose()
   @Type(() => ResponsePadawanDto)
-  Padawan: ResponsePadawanDto;
+  padawans: ResponsePadawanDto;
 }

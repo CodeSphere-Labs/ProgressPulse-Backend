@@ -28,11 +28,11 @@ model User {
 model Padawan {
   id       Int    @id @default(autoincrement())
   userId   Int
-  jediId   Int
+  jediId   Int?
   feedback String[] @default([])
 
   user     User   @relation(fields: [userId], references: [id])
-  jedi     User   @relation("JediPadawans", fields: [jediId], references: [id])
+  jedi     User?   @relation("JediPadawans", fields: [jediId], references: [id])
 }
 
 enum Role {

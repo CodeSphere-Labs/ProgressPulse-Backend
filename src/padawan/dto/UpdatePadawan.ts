@@ -1,20 +1,9 @@
 import { Optional } from '@nestjs/common';
+import { UpdateUserDto } from 'src/database/dto/UpdateUser.dto';
 
-export class UpdatePadawanDto {
-  @Optional()
-  readonly first_name?: string;
-
-  @Optional()
-  readonly last_name?: string;
-
-  @Optional()
-  readonly patronymic?: string;
-
+export class UpdatePadawanDto extends UpdateUserDto {
   @Optional()
   readonly feedback?: string[];
-
-  @Optional()
-  readonly email?: string;
 
   @Optional()
   readonly jediId?: number;
