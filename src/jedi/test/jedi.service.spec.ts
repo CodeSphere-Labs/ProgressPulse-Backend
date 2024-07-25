@@ -4,6 +4,29 @@ import { CreateUserDto } from 'src/database/dto/User.dto';
 import { UpdateJediDto } from 'src/jedi/dto/UpdateJedi';
 import { JediService } from 'src/jedi/jedi.service';
 
+const jedis = [
+  {
+    id: 1,
+    first_name: 'Obi-Wan',
+    last_name: 'Kenobi',
+    patronymic: 'Patronymic',
+    email: 'obi-wan@mail.ru',
+    password: 'password123',
+    role: 'JEDI',
+  },
+  {
+    id: 19,
+    first_name: 'Qui-Gon',
+    last_name: 'Jinn',
+    patronymic: 'Patronymic',
+    email: 'quigonk@mail.ru',
+    password: 'password123',
+    role: 'JEDI' as any,
+  },
+];
+
+const jedi = jedis[0];
+
 describe('JediService', () => {
   let service: JediService;
   let prisma: PrismaService;
@@ -41,31 +64,11 @@ describe('JediService', () => {
 
   describe('findAll', () => {
     it('should return an array of jedis', async () => {
-      const result = [
-        {
-          id: 1,
-          first_name: 'Nik',
-          last_name: 'Vas',
-          patronymic: 'dsffds',
-          email: 'nffik@mail.ru',
-          password: 'password123',
-          role: 'JEDI',
-        },
-        {
-          id: 19,
-          first_name: 'Nik',
-          last_name: 'Vas',
-          patronymic: 'Patronymic',
-          email: 'nfffik@mail.ru',
-          password: 'password123',
-          role: 'JEDI' as any,
-        },
-      ];
-      jest.spyOn(prisma.user, 'findMany').mockResolvedValue(result);
+      jest.spyOn(prisma.user, 'findMany').mockResolvedValue(jedis);
 
       const response = await service.findAll(true);
 
-      expect(response).toEqual(result);
+      expect(response).toEqual(jedis);
       expect(prisma.user.findMany).toHaveBeenCalledWith({
         where: { role: 'JEDI' },
         include: {
@@ -81,23 +84,13 @@ describe('JediService', () => {
 
   describe('findOne', () => {
     it('should return a single jedi', async () => {
-      const result = {
-        id: 1,
-        first_name: 'Nik',
-        last_name: 'Vas',
-        patronymic: 'dsffds',
-        email: 'nffik@mail.ru',
-        password: 'password123',
-        role: 'JEDI' as any,
-        padawans: [],
-      };
-      jest.spyOn(prisma.user, 'findUniqueOrThrow').mockResolvedValue(result);
+      jest.spyOn(prisma.user, 'findUniqueOrThrow').mockResolvedValue(jedi);
 
       const response = await service.findOne('1', true);
 
-      expect(response).toEqual(result);
+      expect(response).toEqual(jedi);
       expect(prisma.user.findUniqueOrThrow).toHaveBeenCalledWith({
-        where: { id: 1 },
+        where: { id: 1, role: 'JEDI' },
         include: {
           padawans: {
             include: {
@@ -187,7 +180,7 @@ describe('JediService', () => {
       ];
 
       jest
-        .spyOn(prisma.user, 'findUnique')
+        .spyOn(prisma.user, 'findUniqueOrThrow')
         .mockResolvedValue({ padawans } as any);
       jest
         .spyOn(prisma.padawan, 'updateMany')
