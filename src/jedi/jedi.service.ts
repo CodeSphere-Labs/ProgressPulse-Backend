@@ -26,7 +26,7 @@ export class JediService {
 
   async findOne(id: string | number, withPadawans?: boolean) {
     return this.prisma.user.findUniqueOrThrow({
-      where: { id: Number(id) },
+      where: { id: Number(id), role: 'JEDI' },
       include: {
         padawans: withPadawans
           ? {
@@ -69,14 +69,14 @@ export class JediService {
   }
 
   async delete(id: string | number) {
-    const { padawans } = await this.prisma.user.findUnique({
-      where: { id: Number(id) },
+    const user = await this.prisma.user.findUniqueOrThrow({
+      where: { id: Number(id), role: 'JEDI' },
       include: {
         padawans: true,
       },
     });
 
-    for (const padawan of padawans) {
+    for (const padawan of user.padawans) {
       await this.prisma.padawan.updateMany({
         where: { id: padawan.id },
         data: { jediId: null },

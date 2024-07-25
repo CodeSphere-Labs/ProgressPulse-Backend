@@ -1,23 +1,3 @@
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { CreateUserDto } from 'src/database/dto/User.dto';
 
-export class CreateYodaDto {
-  @IsNotEmpty()
-  @IsString()
-  readonly first_name: string;
-
-  @IsNotEmpty()
-  @IsString()
-  readonly last_name: string;
-
-  @IsNotEmpty()
-  @IsString()
-  readonly patronymic: string;
-
-  @IsEmail()
-  @IsString()
-  readonly email: string;
-
-  @IsNotEmpty()
-  @IsString()
-  readonly password: string;
-}
+export class CreateYodaDto extends CreateUserDto {}
