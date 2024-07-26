@@ -13,6 +13,7 @@ const jedis = [
     email: 'obi-wan@mail.ru',
     password: 'password123',
     role: 'JEDI',
+    refreshToken: 'refreshToken',
   },
   {
     id: 19,
@@ -22,6 +23,7 @@ const jedis = [
     email: 'quigonk@mail.ru',
     password: 'password123',
     role: 'JEDI' as any,
+    refreshToken: 'refreshToken',
   },
 ];
 
@@ -119,6 +121,7 @@ describe('JediService', () => {
         email: 'luke@example.com',
         password: 'secret',
         role: 'JEDI' as any,
+        refreshToken: 'refreshToken',
       };
       jest.spyOn(prisma.user, 'create').mockResolvedValue(result);
 
@@ -149,6 +152,7 @@ describe('JediService', () => {
         password: 'password123',
         role: 'JEDI' as any,
         padawans: [],
+        refreshToken: 'refreshToken',
       };
       jest.spyOn(prisma.user, 'update').mockResolvedValue(result);
 
