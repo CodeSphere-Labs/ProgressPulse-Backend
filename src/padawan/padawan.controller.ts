@@ -10,11 +10,13 @@ import {
   Patch,
   Post,
   UseInterceptors,
+  UsePipes,
 } from '@nestjs/common';
 import { PadawanService } from './padawan.service';
 import { ResponsePadawanDto } from 'src/padawan/dto/ResponsePadawan';
 import { CreatePadawanDto } from 'src/padawan/dto/CreatePadawan';
 import { ResponseCreatePadawanDto } from 'src/padawan/dto/ResponseCreate';
+import { HashPasswordPipe } from 'src/pipes/hashPassword.pipe';
 
 @Controller('padawan')
 export class PadawanController {
@@ -45,6 +47,7 @@ export class PadawanController {
   }
 
   @Post()
+  @UsePipes(new HashPasswordPipe())
   @UseInterceptors(ClassSerializerInterceptor)
   @UseInterceptors(new TransformDataInterceptor(ResponseCreatePadawanDto))
   create(@Body() createPadawanDto: CreatePadawanDto) {

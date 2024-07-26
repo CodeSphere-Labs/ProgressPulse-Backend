@@ -6,11 +6,13 @@ import {
   Get,
   Post,
   UseInterceptors,
+  UsePipes,
 } from '@nestjs/common';
 import { JediService } from './jedi.service';
 import { ResponseJediDto } from './dto/ResponseJedi';
 import { CreateJediDto } from './dto/CreateJedi';
 import { ResponseCreateJediDto } from './dto/ResponseCreate';
+import { HashPasswordPipe } from 'src/pipes/hashPassword.pipe';
 
 @Controller('jedi')
 export class JediController {
@@ -24,6 +26,7 @@ export class JediController {
   }
 
   @Post()
+  @UsePipes(new HashPasswordPipe())
   @UseInterceptors(ClassSerializerInterceptor)
   @UseInterceptors(new TransformDataInterceptor(ResponseCreateJediDto))
   create(@Body() createJediDto: CreateJediDto) {
