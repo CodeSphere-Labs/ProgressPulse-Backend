@@ -11,10 +11,12 @@ import { ClassConstructor, plainToInstance } from 'class-transformer';
 export class TransformDataInterceptor implements NestInterceptor {
   constructor(private readonly classToUse: ClassConstructor<unknown>) {}
 
-  intercept(context: ExecutionContext, next: CallHandler) {
+  intercept(_: ExecutionContext, next: CallHandler) {
     return next.handle().pipe(
       map((data) => {
-        return plainToInstance(this.classToUse, data);
+        return plainToInstance(this.classToUse, data, {
+          excludeExtraneousValues: true,
+        });
       }),
     );
   }

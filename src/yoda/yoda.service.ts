@@ -2,10 +2,14 @@ import { UpdateYodaDto } from './dto/UpdateYoda';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
 import { CreateYodaDto } from 'src/yoda/dto/CreateYoda';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class YodaService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly authService: AuthService,
+  ) {}
 
   async findAll() {
     return this.prisma.user.findMany({ where: { role: 'YODA' } });
@@ -18,12 +22,16 @@ export class YodaService {
   }
 
   async create(createYodaDto: CreateYodaDto) {
-    return this.prisma.user.create({
+    const yoda = await this.prisma.user.create({
       data: {
         ...createYodaDto,
         role: 'YODA',
       },
     });
+
+    const tokens = await this.authService.signUp(yoda);
+
+    return tokens;
   }
 
   async update(id: number | string, updateYodaDto: UpdateYodaDto) {

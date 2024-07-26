@@ -9,11 +9,14 @@ import {
   Patch,
   Post,
   UseInterceptors,
+  UsePipes,
 } from '@nestjs/common';
-import { TransformDataInterceptor } from 'src/interceptors/transform.data';
+import { TransformDataInterceptor } from 'src/common/interceptors/transform.data';
 import { ResponseYoda } from 'src/yoda/dto/ResponseYoda';
 import { UpdateYodaDto } from 'src/yoda/dto/UpdateYoda';
 import { CreateYodaDto } from 'src/yoda/dto/CreateYoda';
+import { HashPasswordPipe } from '../common/pipes/HashPassword.pipe';
+import { ResponseJWTDto } from '../auth/dto/ResponseJWT.dto';
 
 @Controller('yoda')
 export class YodaController {
@@ -44,8 +47,9 @@ export class YodaController {
   }
 
   @Post()
+  @UsePipes(new HashPasswordPipe())
   @UseInterceptors(ClassSerializerInterceptor)
-  @UseInterceptors(new TransformDataInterceptor(ResponseYoda))
+  @UseInterceptors(new TransformDataInterceptor(ResponseJWTDto))
   create(@Body() createYodaDto: CreateYodaDto) {
     return this.yodaService.create(createYodaDto);
   }

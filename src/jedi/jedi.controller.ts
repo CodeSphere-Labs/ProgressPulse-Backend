@@ -1,4 +1,4 @@
-import { TransformDataInterceptor } from './../interceptors/transform.data';
+import { TransformDataInterceptor } from '../common/interceptors/transform.data';
 import {
   Body,
   ClassSerializerInterceptor,
@@ -10,12 +10,14 @@ import {
   Post,
   Query,
   UseInterceptors,
+  UsePipes,
 } from '@nestjs/common';
 import { JediService } from './jedi.service';
 import { ResponseJediDto } from './dto/ResponseJedi';
 import { ResponseCreateJediDto } from './dto/ResponseCreate';
 import { CreateUserDto } from 'src/database/dto/User.dto';
 import { UpdateJediDto } from 'src/jedi/dto/UpdateJedi';
+import { HashPasswordPipe } from '../common/pipes/HashPassword.pipe';
 
 @Controller('jedi')
 export class JediController {
@@ -29,6 +31,7 @@ export class JediController {
   }
 
   @Post()
+  @UsePipes(new HashPasswordPipe())
   @UseInterceptors(ClassSerializerInterceptor)
   @UseInterceptors(new TransformDataInterceptor(ResponseCreateJediDto))
   create(@Body() createJediDto: CreateUserDto) {
