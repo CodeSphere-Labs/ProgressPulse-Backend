@@ -19,15 +19,17 @@ import { ResponsePadawanDto } from 'src/padawan/dto/ResponsePadawan';
 import { CreatePadawanDto } from 'src/padawan/dto/CreatePadawan';
 import { HashPasswordPipe } from '../common/pipes/HashPassword.pipe';
 import { AccessTokenGuard } from '../common/guards/accessToken.guard';
+import { Roles } from '../common/guards/role.guard';
 
 @Controller('padawan')
 export class PadawanController {
   constructor(private readonly padawanService: PadawanService) {}
 
   @Get('all')
-  @UseGuards(AccessTokenGuard)
   @UseInterceptors(ClassSerializerInterceptor)
   @UseInterceptors(new TransformDataInterceptor(ResponsePadawanDto))
+  @Roles(['YODA', 'JEDI'])
+  @UseGuards(AccessTokenGuard)
   findAll(@Query() params?: { withJedi?: boolean }) {
     return this.padawanService.findAll(params.withJedi);
   }
@@ -45,6 +47,8 @@ export class PadawanController {
   @UseInterceptors(ClassSerializerInterceptor)
   @UseInterceptors(new TransformDataInterceptor(ResponsePadawanDto))
   @Patch(':id')
+  @Roles(['YODA', 'JEDI'])
+  @UseGuards(AccessTokenGuard)
   async update(
     @Param('id') id: string | number,
     @Body() updatePadawanDto: UpdatePadawanDto,
@@ -57,6 +61,8 @@ export class PadawanController {
   @UsePipes(new HashPasswordPipe())
   @UseInterceptors(ClassSerializerInterceptor)
   @UseInterceptors(new TransformDataInterceptor(ResponsePadawanDto))
+  @Roles(['YODA', 'JEDI'])
+  @UseGuards(AccessTokenGuard)
   create(@Body() createPadawanDto: CreatePadawanDto) {
     return this.padawanService.create(createPadawanDto);
   }
@@ -64,6 +70,8 @@ export class PadawanController {
   @Delete(':id')
   @UseInterceptors(ClassSerializerInterceptor)
   @UseInterceptors(new TransformDataInterceptor(ResponsePadawanDto))
+  @Roles(['YODA', 'JEDI'])
+  @UseGuards(AccessTokenGuard)
   delete(@Param('id') id: string | number) {
     return this.padawanService.delete(id);
   }

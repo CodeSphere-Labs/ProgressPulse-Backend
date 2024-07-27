@@ -9,6 +9,7 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
   UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
@@ -18,6 +19,8 @@ import { ResponseCreateJediDto } from './dto/ResponseCreate';
 import { CreateUserDto } from 'src/database/dto/User.dto';
 import { UpdateJediDto } from 'src/jedi/dto/UpdateJedi';
 import { HashPasswordPipe } from '../common/pipes/HashPassword.pipe';
+import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
+import { Roles } from 'src/common/guards/role.guard';
 
 @Controller('jedi')
 export class JediController {
@@ -34,6 +37,8 @@ export class JediController {
   @UsePipes(new HashPasswordPipe())
   @UseInterceptors(ClassSerializerInterceptor)
   @UseInterceptors(new TransformDataInterceptor(ResponseCreateJediDto))
+  @Roles(['YODA'])
+  @UseGuards(AccessTokenGuard)
   create(@Body() createJediDto: CreateUserDto) {
     return this.jediService.create(createJediDto);
   }
@@ -51,6 +56,8 @@ export class JediController {
   @Patch(':id')
   @UseInterceptors(ClassSerializerInterceptor)
   @UseInterceptors(new TransformDataInterceptor(ResponseJediDto))
+  @Roles(['YODA'])
+  @UseGuards(AccessTokenGuard)
   update(
     @Param('id') id: string | number,
     @Body() updateJediDto: UpdateJediDto,
@@ -62,6 +69,8 @@ export class JediController {
   @Delete(':id')
   @UseInterceptors(ClassSerializerInterceptor)
   @UseInterceptors(new TransformDataInterceptor(ResponseJediDto))
+  @Roles(['YODA'])
+  @UseGuards(AccessTokenGuard)
   delete(@Param('id') id: string | number) {
     return this.jediService.delete(id);
   }
