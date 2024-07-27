@@ -1,6 +1,8 @@
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from 'src/app.module';
+import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
+import { RolesGuard } from 'src/common/guards/role.guard';
 import { PrismaService } from 'src/database/prisma.service';
 import * as request from 'supertest';
 
@@ -27,6 +29,18 @@ describe('PadawanModule (e2e)', () => {
     })
       .overrideProvider(PrismaService)
       .useValue(mockDataBaseService)
+      .overrideGuard(RolesGuard)
+      .useValue({
+        canActivate: (context) => {
+          const request = context.switchToHttp().getRequest();
+          request.user = { role: 'YODA' }; // Mock user role
+          return true;
+        },
+      })
+      .overrideGuard(AccessTokenGuard)
+      .useValue({
+        canActivate: () => true,
+      })
       .compile();
 
     app = moduleFixture.createNestApplication();

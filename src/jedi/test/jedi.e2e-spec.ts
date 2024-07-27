@@ -3,6 +3,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../../app.module';
 import { PrismaService } from '../../database/prisma.service';
 import * as request from 'supertest';
+import { RolesGuard } from 'src/common/guards/role.guard';
+import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
 
 describe('JediModule (e2e)', () => {
   let app: INestApplication;
@@ -27,6 +29,18 @@ describe('JediModule (e2e)', () => {
     })
       .overrideProvider(PrismaService)
       .useValue(mockDataBaseService)
+      .overrideGuard(RolesGuard)
+      .useValue({
+        canActivate: (context) => {
+          const request = context.switchToHttp().getRequest();
+          request.user = { role: 'YODA' }; // Mock user role
+          return true;
+        },
+      })
+      .overrideGuard(AccessTokenGuard)
+      .useValue({
+        canActivate: () => true,
+      })
       .compile();
 
     app = moduleFixture.createNestApplication();
