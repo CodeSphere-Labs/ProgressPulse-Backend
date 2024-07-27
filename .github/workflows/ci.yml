@@ -34,9 +34,13 @@ jobs:
         run: npm run lint
 
       - name: 🧪 Run tests 🧪
+        env:
+          JWT_ACCESS_SECRET: ${{ secrets.JWT_ACCESS_SECRET }}
         run: npm run test
 
       - name: 🛠️ Build project 🛠️
+        env:
+          JWT_ACCESS_SECRET: ${{ secrets.JWT_ACCESS_SECRET }}
         run: npm run build
 
       - name: 📡 Run e2e tests 📡
