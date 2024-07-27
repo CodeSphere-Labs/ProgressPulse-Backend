@@ -6,7 +6,6 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "prepare": "husky install",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
@@ -19,19 +18,14 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./jest-e2e.js",
-    "lint-staged": {
-      "src/**/*.{ts,tsx}": [
-        "eslint --fix",
-        "prettier --write",
-        "git add"
-      ],
-      "test/**/*.{ts,tsx}": [
-        "eslint --fix",
-        "prettier --write",
-        "git add"
-      ]
-    }
+    "prepare": "husky"
   },
+  "lint-staged": {
+      "src/**/*.ts": [
+        "yarn lint",
+        "yarn test --no-cache"
+      ]
+    },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
     "@nestjs/core": "^10.0.0",
