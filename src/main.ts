@@ -24,9 +24,9 @@ function swaggerInit(app: INestApplication<any>) {
     .setTitle('Progress Pulse')
     .setDescription('The ProgressPulse API description')
     .setVersion('1.0')
-    .addTag('yoda')
-    .addTag('jedi')
-    .addTag('padawan')
+    .addTag('Yoda')
+    .addTag('Jedi')
+    .addTag('Padawan')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);

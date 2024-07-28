@@ -20,16 +20,18 @@ import { CreatePadawanDto } from 'src/padawan/dto/CreatePadawan';
 import { HashPasswordPipe } from '../common/pipes/HashPassword.pipe';
 import { AccessTokenGuard } from '../common/guards/accessToken.guard';
 import { Roles } from '../common/guards/role.guard';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Padawan')
 @Controller('padawan')
 export class PadawanController {
   constructor(private readonly padawanService: PadawanService) {}
 
   @Get('all')
-  @UseInterceptors(ClassSerializerInterceptor)
-  @UseInterceptors(new TransformDataInterceptor(ResponsePadawanDto))
   @Roles(['YODA', 'JEDI'])
   @UseGuards(AccessTokenGuard)
+  @UseInterceptors(ClassSerializerInterceptor)
+  @UseInterceptors(new TransformDataInterceptor(ResponsePadawanDto))
   findAll(@Query() params?: { withJedi?: boolean }) {
     return this.padawanService.findAll(params.withJedi);
   }
@@ -44,11 +46,21 @@ export class PadawanController {
     return this.padawanService.findOne(id, params.withJedi);
   }
 
+  @Post()
+  @Roles(['YODA', 'JEDI'])
+  @UseGuards(AccessTokenGuard)
+  @UsePipes(new HashPasswordPipe())
   @UseInterceptors(ClassSerializerInterceptor)
   @UseInterceptors(new TransformDataInterceptor(ResponsePadawanDto))
+  create(@Body() createPadawanDto: CreatePadawanDto) {
+    return this.padawanService.create(createPadawanDto);
+  }
+
   @Patch(':id')
   @Roles(['YODA', 'JEDI'])
   @UseGuards(AccessTokenGuard)
+  @UseInterceptors(ClassSerializerInterceptor)
+  @UseInterceptors(new TransformDataInterceptor(ResponsePadawanDto))
   async update(
     @Param('id') id: string | number,
     @Body() updatePadawanDto: UpdatePadawanDto,
@@ -57,21 +69,11 @@ export class PadawanController {
     return this.padawanService.update(id, updatePadawanDto, params.withJedi);
   }
 
-  @Post()
-  @UsePipes(new HashPasswordPipe())
-  @UseInterceptors(ClassSerializerInterceptor)
-  @UseInterceptors(new TransformDataInterceptor(ResponsePadawanDto))
-  @Roles(['YODA', 'JEDI'])
-  @UseGuards(AccessTokenGuard)
-  create(@Body() createPadawanDto: CreatePadawanDto) {
-    return this.padawanService.create(createPadawanDto);
-  }
-
   @Delete(':id')
-  @UseInterceptors(ClassSerializerInterceptor)
-  @UseInterceptors(new TransformDataInterceptor(ResponsePadawanDto))
   @Roles(['YODA', 'JEDI'])
   @UseGuards(AccessTokenGuard)
+  @UseInterceptors(ClassSerializerInterceptor)
+  @UseInterceptors(new TransformDataInterceptor(ResponsePadawanDto))
   delete(@Param('id') id: string | number) {
     return this.padawanService.delete(id);
   }

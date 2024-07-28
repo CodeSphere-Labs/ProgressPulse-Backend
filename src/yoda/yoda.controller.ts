@@ -1,3 +1,4 @@
+import { ApiTags } from '@nestjs/swagger';
 import { YodaService } from 'src/yoda/yoda.service';
 import {
   Body,
@@ -18,6 +19,7 @@ import { CreateYodaDto } from 'src/yoda/dto/CreateYoda';
 import { HashPasswordPipe } from '../common/pipes/HashPassword.pipe';
 import { ResponseJWTDto } from '../auth/dto/ResponseJWT.dto';
 
+@ApiTags('Yoda')
 @Controller('yoda')
 export class YodaController {
   constructor(private readonly yodaService: YodaService) {}
@@ -36,22 +38,22 @@ export class YodaController {
     return this.yodaService.findOne(id);
   }
 
-  @UseInterceptors(ClassSerializerInterceptor)
-  @UseInterceptors(new TransformDataInterceptor(ResponseYoda))
-  @Patch(':id')
-  async update(
-    @Param('id') id: string | number,
-    @Body() updateYodaDto: UpdateYodaDto,
-  ) {
-    return this.yodaService.update(id, updateYodaDto);
-  }
-
   @Post()
   @UsePipes(new HashPasswordPipe())
   @UseInterceptors(ClassSerializerInterceptor)
   @UseInterceptors(new TransformDataInterceptor(ResponseJWTDto))
   create(@Body() createYodaDto: CreateYodaDto) {
     return this.yodaService.create(createYodaDto);
+  }
+
+  @Patch(':id')
+  @UseInterceptors(ClassSerializerInterceptor)
+  @UseInterceptors(new TransformDataInterceptor(ResponseYoda))
+  async update(
+    @Param('id') id: string | number,
+    @Body() updateYodaDto: UpdateYodaDto,
+  ) {
+    return this.yodaService.update(id, updateYodaDto);
   }
 
   @Delete(':id')

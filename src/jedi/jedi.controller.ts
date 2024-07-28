@@ -1,3 +1,4 @@
+import { ApiTags } from '@nestjs/swagger';
 import { TransformDataInterceptor } from '../common/interceptors/transform.data';
 import {
   Body,
@@ -22,6 +23,7 @@ import { HashPasswordPipe } from '../common/pipes/HashPassword.pipe';
 import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
 import { Roles } from 'src/common/guards/role.guard';
 
+@ApiTags('Jedi')
 @Controller('jedi')
 export class JediController {
   constructor(private readonly jediService: JediService) {}
@@ -31,16 +33,6 @@ export class JediController {
   @UseInterceptors(new TransformDataInterceptor(ResponseJediDto))
   findAll(@Query() params?: { withPadawans?: boolean }) {
     return this.jediService.findAll(params.withPadawans);
-  }
-
-  @Post()
-  @UsePipes(new HashPasswordPipe())
-  @UseInterceptors(ClassSerializerInterceptor)
-  @UseInterceptors(new TransformDataInterceptor(ResponseCreateJediDto))
-  @Roles(['YODA'])
-  @UseGuards(AccessTokenGuard)
-  create(@Body() createJediDto: CreateUserDto) {
-    return this.jediService.create(createJediDto);
   }
 
   @Get(':id')
@@ -53,11 +45,21 @@ export class JediController {
     return this.jediService.findOne(id, params.withPadawans);
   }
 
-  @Patch(':id')
-  @UseInterceptors(ClassSerializerInterceptor)
-  @UseInterceptors(new TransformDataInterceptor(ResponseJediDto))
+  @Post()
   @Roles(['YODA'])
   @UseGuards(AccessTokenGuard)
+  @UsePipes(new HashPasswordPipe())
+  @UseInterceptors(ClassSerializerInterceptor)
+  @UseInterceptors(new TransformDataInterceptor(ResponseCreateJediDto))
+  create(@Body() createJediDto: CreateUserDto) {
+    return this.jediService.create(createJediDto);
+  }
+
+  @Patch(':id')
+  @Roles(['YODA'])
+  @UseGuards(AccessTokenGuard)
+  @UseInterceptors(ClassSerializerInterceptor)
+  @UseInterceptors(new TransformDataInterceptor(ResponseJediDto))
   update(
     @Param('id') id: string | number,
     @Body() updateJediDto: UpdateJediDto,
@@ -67,10 +69,10 @@ export class JediController {
   }
 
   @Delete(':id')
-  @UseInterceptors(ClassSerializerInterceptor)
-  @UseInterceptors(new TransformDataInterceptor(ResponseJediDto))
   @Roles(['YODA'])
   @UseGuards(AccessTokenGuard)
+  @UseInterceptors(ClassSerializerInterceptor)
+  @UseInterceptors(new TransformDataInterceptor(ResponseJediDto))
   delete(@Param('id') id: string | number) {
     return this.jediService.delete(id);
   }
