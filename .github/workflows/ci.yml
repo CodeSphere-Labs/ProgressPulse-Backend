@@ -36,14 +36,14 @@ jobs:
       - name: 🧪 Run tests 🧪
         env:
           JWT_ACCESS_SECRET: ${{ secrets.JWT_ACCESS_SECRET }}
-          JWT_ACCESS_SECRET: ${{ secrets.JWT_REFRESH_SECRET }}
+          JWT_REFRESH_SECRET: ${{ secrets.JWT_REFRESH_SECRET }}
         run: npm run test
 
       - name: 🛠️ Build project 🛠️
         run: npm run build
 
       - name: 📡 Run e2e tests 📡
-       env:
+        env:
           JWT_ACCESS_SECRET: ${{ secrets.JWT_ACCESS_SECRET }}
-          JWT_ACCESS_SECRET: ${{ secrets.JWT_REFRESH_SECRET }}
+          JWT_REFRESH_SECRET: ${{ secrets.JWT_REFRESH_SECRET }}
         run: npm run test:e2e
