@@ -21,6 +21,7 @@ import { HashPasswordPipe } from '../common/pipes/HashPassword.pipe';
 import { AccessTokenGuard } from '../common/guards/accessToken.guard';
 import { Roles } from '../common/guards/role.guard';
 import { ApiTags } from '@nestjs/swagger';
+import { ApiResponse } from '@nestjs/swagger';
 
 @ApiTags('Padawan')
 @Controller('padawan')
@@ -32,6 +33,11 @@ export class PadawanController {
   @UseGuards(AccessTokenGuard)
   @UseInterceptors(ClassSerializerInterceptor)
   @UseInterceptors(new TransformDataInterceptor(ResponsePadawanDto))
+  @ApiResponse({
+    status: 200,
+    type: [ResponsePadawanDto],
+    description: 'Return all users with role Padawan.',
+  })
   findAll(@Query() params?: { withJedi?: boolean }) {
     return this.padawanService.findAll(params.withJedi);
   }
@@ -39,6 +45,11 @@ export class PadawanController {
   @Get(':id')
   @UseInterceptors(ClassSerializerInterceptor)
   @UseInterceptors(new TransformDataInterceptor(ResponsePadawanDto))
+  @ApiResponse({
+    status: 200,
+    type: [ResponsePadawanDto],
+    description: 'Return user with role Padawan.',
+  })
   async findOne(
     @Param('id') id: string | number,
     @Query() params?: { withJedi?: boolean },
@@ -52,6 +63,11 @@ export class PadawanController {
   @UsePipes(new HashPasswordPipe())
   @UseInterceptors(ClassSerializerInterceptor)
   @UseInterceptors(new TransformDataInterceptor(ResponsePadawanDto))
+  @ApiResponse({
+    status: 201,
+    type: [ResponsePadawanDto],
+    description: 'Return created user with role Padawan.',
+  })
   create(@Body() createPadawanDto: CreatePadawanDto) {
     return this.padawanService.create(createPadawanDto);
   }
@@ -61,6 +77,11 @@ export class PadawanController {
   @UseGuards(AccessTokenGuard)
   @UseInterceptors(ClassSerializerInterceptor)
   @UseInterceptors(new TransformDataInterceptor(ResponsePadawanDto))
+  @ApiResponse({
+    status: 200,
+    type: [ResponsePadawanDto],
+    description: 'Return patched user with role Padawan.',
+  })
   async update(
     @Param('id') id: string | number,
     @Body() updatePadawanDto: UpdatePadawanDto,
@@ -74,6 +95,11 @@ export class PadawanController {
   @UseGuards(AccessTokenGuard)
   @UseInterceptors(ClassSerializerInterceptor)
   @UseInterceptors(new TransformDataInterceptor(ResponsePadawanDto))
+  @ApiResponse({
+    status: 200,
+    type: [ResponsePadawanDto],
+    description: 'Return deleted user with role Padawan.',
+  })
   delete(@Param('id') id: string | number) {
     return this.padawanService.delete(id);
   }

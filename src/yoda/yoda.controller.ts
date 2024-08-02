@@ -18,6 +18,7 @@ import { UpdateYodaDto } from 'src/yoda/dto/UpdateYoda';
 import { CreateYodaDto } from 'src/yoda/dto/CreateYoda';
 import { HashPasswordPipe } from '../common/pipes/HashPassword.pipe';
 import { ResponseJWTDto } from '../auth/dto/ResponseJWT.dto';
+import { ApiResponse } from '@nestjs/swagger';
 
 @ApiTags('Yoda')
 @Controller('yoda')
@@ -27,6 +28,11 @@ export class YodaController {
   @Get('all')
   @UseInterceptors(ClassSerializerInterceptor)
   @UseInterceptors(new TransformDataInterceptor(ResponseYoda))
+  @ApiResponse({
+    status: 200,
+    type: [ResponseYoda],
+    description: 'Return all users with role Yoda.',
+  })
   findAll() {
     return this.yodaService.findAll();
   }
@@ -34,6 +40,11 @@ export class YodaController {
   @Get(':id')
   @UseInterceptors(ClassSerializerInterceptor)
   @UseInterceptors(new TransformDataInterceptor(ResponseYoda))
+  @ApiResponse({
+    status: 200,
+    type: [ResponseYoda],
+    description: 'Return user with role Yoda.',
+  })
   async findOne(@Param('id') id: string | number) {
     return this.yodaService.findOne(id);
   }
@@ -42,6 +53,11 @@ export class YodaController {
   @UsePipes(new HashPasswordPipe())
   @UseInterceptors(ClassSerializerInterceptor)
   @UseInterceptors(new TransformDataInterceptor(ResponseJWTDto))
+  @ApiResponse({
+    status: 201,
+    type: ResponseJWTDto,
+    description: 'Return token for user with role Yoda.',
+  })
   create(@Body() createYodaDto: CreateYodaDto) {
     return this.yodaService.create(createYodaDto);
   }
@@ -49,6 +65,11 @@ export class YodaController {
   @Patch(':id')
   @UseInterceptors(ClassSerializerInterceptor)
   @UseInterceptors(new TransformDataInterceptor(ResponseYoda))
+  @ApiResponse({
+    status: 200,
+    type: ResponseYoda,
+    description: 'Return pathched user with role Yoda.',
+  })
   async update(
     @Param('id') id: string | number,
     @Body() updateYodaDto: UpdateYodaDto,
@@ -59,6 +80,11 @@ export class YodaController {
   @Delete(':id')
   @UseInterceptors(ClassSerializerInterceptor)
   @UseInterceptors(new TransformDataInterceptor(ResponseYoda))
+  @ApiResponse({
+    status: 200,
+    type: ResponseYoda,
+    description: 'Return deleted user with role Yoda.',
+  })
   delete(@Param('id') id: string | number) {
     return this.yodaService.delete(id);
   }

@@ -5,7 +5,7 @@ import { ApiProperty } from '@nestjs/swagger';
 export class CreatePadawanDto extends CreateUserDto {
   @IsNotEmpty()
   @IsNumber()
-  @ApiProperty()
+  @ApiProperty({ nullable: true })
   readonly jediId: number;
 
   @IsOptional()
