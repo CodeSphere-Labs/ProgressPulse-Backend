@@ -1,9 +1,18 @@
 import { ApiTags } from '@nestjs/swagger';
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignInDto } from './dto/signIn';
 import { RefreshTokenDto } from './dto/refreshToken.dto';
 import { AccessTokenGuard } from '../common/guards/accessToken.guard';
+import type { Response } from 'express';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -11,8 +20,19 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('sign-in')
-  signIn(@Body() signInDto: SignInDto) {
-    return this.authService.signIn(signInDto);
+  async signIn(
+    @Body() signInDto: SignInDto,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const { accessToken, refreshToken } =
+      await this.authService.signIn(signInDto);
+
+    response.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: false,
+    });
+
+    return { accessToken };
   }
 
   @Post('refresh-token')
