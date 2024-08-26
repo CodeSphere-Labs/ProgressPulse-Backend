@@ -17,6 +17,18 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
 
   app.use(cookieParser());
+  app.enableCors({
+    origin: 'http://localhost:5173',
+    allowedHeaders: [
+      'Content-Type',
+      'Origin',
+      'X-Requested-With',
+      'Accept',
+      'Authorization',
+    ],
+    exposedHeaders: ['Authorization'],
+    credentials: true,
+  });
 
   await app.listen(3000);
 }

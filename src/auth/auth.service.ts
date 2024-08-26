@@ -42,7 +42,7 @@ export class AuthService {
     const tokens = await this.getTokens(user.id, user.email, user.role);
     await this.updateRefreshToken(user.id, tokens.refreshToken);
 
-    return tokens;
+    return { ...tokens, user };
   }
 
   async logout(userId: number) {
@@ -72,6 +72,14 @@ export class AuthService {
 
     if (!refreshTokenMatches) throw new ForbiddenException('Access Denied');
 
+    try {
+      this.jwtService.verify(refreshTokenDto.refreshToken, {
+        secret: process.env.JWT_REFRESH_SECRET,
+      });
+    } catch (e) {
+      throw new ForbiddenException('Invalid Refresh Token');
+    }
+
     const tokens = await this.getTokens(user.id, user.email, user.role);
     await this.updateRefreshToken(user.id, tokens.refreshToken);
     return tokens;
@@ -94,7 +102,6 @@ export class AuthService {
         {
           sub: userId,
           email,
-          role,
         },
         {
           secret: process.env.JWT_REFRESH_SECRET,
